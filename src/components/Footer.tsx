@@ -21,9 +21,9 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 pt-32 pb-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
           <div className="max-w-xl">
-            <h2 className="text-[clamp(3rem,8vw,6rem)] font-black tracking-tighter leading-[0.9] text-[var(--text-primary)] mb-6 uppercase">
-              Let&apos;s Build <br />
-              <span className="text-[var(--text-muted)]">Something.</span>
+            <h2 className="text-[clamp(3rem,8vw,6rem)] font-black tracking-tighter leading-[0.9] text-[var(--text-primary)] mb-6">
+              Let&apos;s build <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-cyan)] to-[var(--accent-violet)]">something.</span>
             </h2>
             <p className="text-xl text-[var(--text-secondary)] font-medium leading-relaxed mb-10 max-w-md">
               Currently open to new opportunities in Full-Stack Engineering, Applied AI, and Cloud Infrastructure.
