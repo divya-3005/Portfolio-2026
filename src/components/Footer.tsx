@@ -18,17 +18,26 @@ export default function Footer() {
       {/* Subtle glow effect */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[var(--accent-cyan)]/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 pt-32 pb-12 relative z-10">
-        <div className="flex flex-col items-center text-center gap-12 mb-24">
-          <div className="max-w-2xl flex flex-col items-center">
-            <h2 className="text-[clamp(3rem,8vw,6rem)] font-black tracking-tighter leading-[0.9] mb-6">
+      <div className="section-container relative z-10 !pt-20 !pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16 items-start">
+          {/* Left Side: Header */}
+          <div className="md:col-span-5 text-left">
+            <h2 className="text-[clamp(3.5rem,5vw,5rem)] font-black tracking-tighter leading-[0.9] mb-6">
               <span className="text-[var(--text-muted)]">Let&apos;s</span>{' '}
               <span className="text-[var(--text-secondary)]">build</span> <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-cyan)] to-[var(--accent-violet)]">something.</span>
             </h2>
-            <p className="text-xl text-[var(--text-secondary)] font-medium leading-relaxed mb-10 max-w-md mx-auto">
+          </div>
+
+          {/* Right Side: Para, Button, Links */}
+          <div className="md:col-span-7 flex flex-col items-start md:mt-4 text-left">
+            <p className="text-xl text-[var(--text-secondary)] font-medium leading-relaxed max-w-md">
               Currently open to new opportunities in Full-Stack Engineering, Applied AI, and Cloud Infrastructure.
             </p>
+
+            {/* Spacer above button */}
+            <div className="h-4 w-full flex-shrink-0" />
+            
             <a 
               href="mailto:divyasingh2005@gmail.com"
               className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-[var(--text-primary)] text-[var(--bg-primary)] rounded-full font-bold text-sm tracking-widest uppercase hover:scale-105 transition-transform"
@@ -36,10 +45,11 @@ export default function Footer() {
               <Mail size={18} />
               Start a Conversation
             </a>
-          </div>
 
-          <div className="flex justify-center mt-4">
-            <div className="flex gap-6">
+            {/* Spacer to guarantee vertical separation */}
+            <div className="h-6 w-full flex-shrink-0" />
+
+            <div className="flex gap-4">
               {socialLinks.map(link => (
                 <a
                   key={link.label}
@@ -55,9 +65,11 @@ export default function Footer() {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-[var(--border-subtle)]">
+      {/* Bottom Bar Full Width Line */}
+      <div className="w-full border-t border-[var(--border-subtle)] relative z-10">
+        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-violet)] flex items-center justify-center text-white font-bold text-sm">
               DS
