@@ -93,7 +93,7 @@ export default function Hero() {
             Email
           </a>
           <a
-            href="/resume.pdf"
+            href="https://drive.google.com/file/d/1AzcHk9e7cN2emEcQSsKX0fbzi4U8DsPV/view?usp=drivesdk"
             className="minimal-link"
             target="_blank"
             rel="noopener noreferrer"
