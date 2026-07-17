@@ -11,7 +11,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer id="contact" className="relative bg-[var(--bg-secondary)] overflow-hidden">
+    <footer id="contact" className="relative bg-[var(--bg-secondary)] overflow-hidden w-full block">
       {/* Massive gradient top line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--accent-cyan)] to-transparent opacity-30" />
       

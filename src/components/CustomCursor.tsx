@@ -85,7 +85,13 @@ export default function CustomCursor() {
     };
   }, [cursorX, cursorY, cursorWidth, cursorHeight, cursorRadius, magneticPos]);
 
-  if (typeof window !== 'undefined' && !window.matchMedia('(pointer: fine)').matches) {
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || (typeof window !== 'undefined' && !window.matchMedia('(pointer: fine)').matches)) {
     return null;
   }
 
@@ -98,7 +104,8 @@ export default function CustomCursor() {
           y: cursorY,
           width: cursorWidth,
           height: cursorHeight,
-          borderRadius: cursorRadius
+          borderRadius: cursorRadius,
+          opacity: position.x === 0 && position.y === 0 ? 0 : 1 // Hide until mouse moves
         }}
         transition={{ type: 'spring', damping: 25, stiffness: 400 }}
       />
