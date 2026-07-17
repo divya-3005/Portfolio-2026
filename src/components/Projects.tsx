@@ -68,7 +68,7 @@ export default function Projects() {
         </motion.div>
 
         {/* Project Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '2.5rem' }}>
           {TOP_PROJECTS.map((project, index) => (
             <motion.a
               key={project.id}
@@ -79,7 +79,8 @@ export default function Projects() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group flex flex-col bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent-cyan)] hover:shadow-[0_0_20px_rgba(0,255,255,0.1)] hover:-translate-y-2 transition-all duration-300 p-6 md:p-10"
+              className="group flex flex-col bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent-cyan)] hover:shadow-[0_0_20px_rgba(0,255,255,0.1)] hover:-translate-y-2 transition-all duration-300"
+              style={{ padding: '2.5rem' }}
             >
               <div className="flex flex-col h-full">
                 <div className="flex justify-between items-start" style={{ marginBottom: '2rem' }}>
@@ -93,7 +94,7 @@ export default function Projects() {
                   {project.description}
                 </p>
 
-                <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-tertiary)] p-4 md:p-5 mb-8">
+                <div className="rounded-lg border border-[var(--border-subtle)]" style={{ marginBottom: '2.5rem', padding: '1.25rem', backgroundColor: 'var(--bg-tertiary)' }}>
                   <p className="text-[var(--text-primary)] text-sm font-medium leading-relaxed">
                     <span className="text-[var(--accent-cyan)] opacity-70 mr-2">Result:</span>
                     {project.outcome}

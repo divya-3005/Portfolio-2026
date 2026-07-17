@@ -50,7 +50,7 @@ export default function Experience() {
   const activeItem = TIMELINE.find((item) => item.id === activeTabId) || TIMELINE[0];
 
   return (
-    <section id="experience" className="relative py-16 md:py-24 bg-[var(--bg-primary)] overflow-hidden block w-full">
+    <section id="experience" className="relative py-24 bg-[var(--bg-primary)] overflow-hidden block w-full">
       {/* Decorative background blurs */}
       <div className="absolute top-40 left-0 w-96 h-96 bg-[var(--accent-cyan)]/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-20 right-0 w-96 h-96 bg-[var(--accent-pink)]/5 rounded-full blur-[120px] pointer-events-none" />
@@ -58,7 +58,7 @@ export default function Experience() {
       <div className="section-container relative z-10">
         
         {/* 1. Header Section - Centered */}
-        <div className="w-full flex flex-col items-center justify-center text-center" style={{ marginBottom: '3rem' }}>
+        <div className="w-full flex flex-col items-center justify-center text-center" style={{ marginBottom: '4rem' }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -70,7 +70,7 @@ export default function Experience() {
               <span className="text-sm font-mono text-[var(--text-muted)] tracking-widest uppercase">{`// 06`}</span>
               <div className="h-px w-8 bg-[var(--border-subtle)] hidden md:block" />
             </div>
-            <h3 className="text-3xl md:text-5xl font-bold text-[var(--text-primary)] tracking-tight">
+            <h3 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] tracking-tight">
               Where I've <span className="text-[var(--accent-cyan)]">Worked</span>
             </h3>
           </motion.div>
@@ -78,29 +78,24 @@ export default function Experience() {
 
         {/* 2. Content Section - Grid Layout pulled inward */}
         <div className="w-full block max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16 items-start w-full">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-start w-full">
             
             {/* Tabs List (Left Column, spans 4 cols on desktop) */}
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="md:col-span-4 flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible hide-scrollbar border-b md:border-b-0 md:border-l border-[var(--border-subtle)] relative w-full pb-1 md:pb-0"
+              className="md:col-span-4 flex md:flex-col overflow-x-auto md:overflow-x-visible hide-scrollbar border-b md:border-b-0 md:border-l border-[var(--border-subtle)] relative w-full snap-x snap-mandatory"
             >
-              {/* Animated Active Indicator */}
+              {/* Animated Active Indicator (Desktop) */}
               <div className="absolute transition-all duration-300 ease-out hidden md:block w-[2px] bg-[var(--accent-cyan)] left-[-1px]" 
                    style={{ 
                      top: `${TIMELINE.findIndex(t => t.id === activeTabId) * 72}px`,
                      height: '72px' 
                    }} 
               />
-              {/* Animated Active Indicator (Mobile) */}
-              <div className="absolute transition-all duration-300 ease-out md:hidden h-[2px] bg-[var(--accent-cyan)] bottom-0" 
-                   style={{ 
-                     left: `${TIMELINE.findIndex(t => t.id === activeTabId) * (100 / TIMELINE.length)}%`,
-                     width: `${100 / TIMELINE.length}%` 
-                   }} 
-              />
+              
+              {/* Animated Active Indicator (Mobile) - Since we scroll, an absolute width indicator is hard. We will attach it per-button using a trick below, or just rely on background color on mobile */}
 
               {TIMELINE.map((item) => {
                 const isActive = activeTabId === item.id;
@@ -108,20 +103,24 @@ export default function Experience() {
                   <button
                     key={item.id}
                     onClick={() => setActiveTabId(item.id)}
-                    className={`h-[60px] md:h-[72px] px-6 md:px-8 flex items-center justify-center md:justify-start whitespace-nowrap text-base md:text-lg font-medium transition-all duration-300 relative group text-left w-auto md:w-full flex-shrink-0
+                    className={`h-[64px] md:h-[72px] px-6 md:px-8 flex-shrink-0 flex items-center justify-center md:justify-start whitespace-nowrap text-base md:text-lg font-medium transition-all duration-300 relative group text-left snap-start
                       ${isActive 
-                        ? 'text-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5' 
+                        ? 'text-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5 md:bg-transparent md:bg-[var(--accent-cyan)]/5' 
                         : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
                       }`}
                   >
                     {item.organization}
+                    {/* Mobile bottom border indicator */}
+                    {isActive && (
+                      <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--accent-cyan)] md:hidden" />
+                    )}
                   </button>
                 );
               })}
             </motion.div>
 
             {/* Tab Content (Right Column, spans 8 cols on desktop) */}
-            <div className="md:col-span-8 w-full min-h-[300px] md:min-h-[400px]">
+            <div className="md:col-span-8 w-full min-h-[400px]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeItem.id}
@@ -131,11 +130,11 @@ export default function Experience() {
                   transition={{ duration: 0.4, ease: 'easeOut' }}
                   className="w-full"
                 >
-                  <div className="w-full" style={{ marginBottom: '2rem' }}>
-                    <h3 className="text-2xl md:text-4xl font-bold text-[var(--text-primary)] leading-tight mb-2 md:mb-4">
+                  <div className="w-full" style={{ marginBottom: '3rem' }}>
+                    <h3 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] leading-tight" style={{ marginBottom: '1rem' }}>
                       {activeItem.title}
                     </h3>
-                    <div className="text-lg md:text-2xl text-[var(--accent-cyan)] font-medium mb-4 md:mb-8">
+                    <div className="text-xl md:text-2xl text-[var(--accent-cyan)] font-medium" style={{ marginBottom: '2rem' }}>
                       @ {activeItem.organization}
                     </div>
                     

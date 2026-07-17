@@ -69,16 +69,16 @@ export default function ContributionHeatmap() {
 
           <div className="w-full max-w-5xl mx-auto" style={{ marginTop: '1.5rem' }}>
             <div className="flex flex-col items-center">
-              <div className="w-full overflow-x-auto hide-scrollbar flex justify-start md:justify-center rounded-2xl border border-[#1f2937] bg-[#161b22] p-4 md:p-8 shadow-2xl relative z-10">
+              <div className="w-full overflow-x-auto hide-scrollbar flex justify-start md:justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 md:p-8 shadow-2xl relative z-10">
                 {loading ? (
-                  <div className="h-[150px] w-[700px] flex items-center justify-center flex-shrink-0">
+                  <div className="h-[150px] w-full flex items-center justify-center" style={{ minWidth: '700px' }}>
                     <div className="skeleton w-full h-[120px] rounded-xl opacity-20" />
                   </div>
                 ) : (
                   <img 
                     src={svgUrl || "https://raw.githubusercontent.com/divya-3005/divya-3005/output/github-contribution-grid-snake-dark.svg?v=3"} 
                     alt="GitHub Snake Contribution Graph" 
-                    className="max-w-none md:max-w-4xl mx-auto h-auto flex-shrink-0"
+                    className="w-auto max-w-none h-auto"
                     style={{ minWidth: '700px' }}
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
