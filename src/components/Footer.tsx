@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Heart } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './Icons';
 
 export default function Footer() {
+  const [copied, setCopied] = useState(false);
   const socialLinks = [
     { icon: <GithubIcon size={24} />, href: 'https://github.com/divya-3005', label: 'GitHub' },
     { icon: <LinkedinIcon size={24} />, href: 'https://www.linkedin.com/in/divya-singh-5435093b4/', label: 'LinkedIn' },
@@ -28,13 +30,18 @@ export default function Footer() {
             <p className="text-xl text-[var(--text-secondary)] font-medium leading-relaxed mb-10 max-w-md">
               Currently open to new opportunities in Full-Stack Engineering, Applied AI, and Cloud Infrastructure.
             </p>
-            <a 
-              href="mailto:divyasingh2005@gmail.com"
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                navigator.clipboard.writeText('divyasingh2005@gmail.com');
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
               className="inline-flex items-center gap-3 px-8 py-4 bg-[var(--text-primary)] text-[var(--bg-primary)] rounded-full font-bold text-sm tracking-widest uppercase hover:scale-105 transition-transform"
             >
               <Mail size={18} />
-              Start a Conversation
-            </a>
+              {copied ? 'Email Copied!' : 'Start a Conversation'}
+            </button>
           </div>
 
           <div className="flex flex-col lg:items-end justify-end space-y-8">

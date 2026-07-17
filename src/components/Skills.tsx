@@ -125,14 +125,14 @@ export default function Skills() {
 
         <div className="flex flex-col lg:flex-row" style={{ gap: '2rem' }}>
           {/* Sidebar / Tabs */}
-          <div className="w-full lg:w-1/3 flex flex-col" style={{ gap: '0.25rem' }}>
+          <div className="w-full lg:w-1/3 flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible hide-scrollbar pb-4 lg:pb-0" style={{ gap: '0.5rem' }}>
             {SKILL_CATEGORIES.map((cat) => {
               const isActive = activeTab === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => setActiveTab(cat.id)}
-                  className={`flex items-center text-left rounded-xl transition-all duration-300 w-full group relative overflow-hidden`}
+                  className={`flex items-center text-left rounded-xl transition-all duration-300 w-auto lg:w-full group relative overflow-hidden flex-shrink-0`}
                   style={{
                     padding: '0.75rem 1rem',
                     backgroundColor: isActive ? 'var(--bg-tertiary)' : 'transparent',
@@ -149,19 +149,19 @@ export default function Skills() {
                   )}
                   
                   <div 
-                    className="flex items-center justify-center rounded-lg transition-colors"
+                    className="flex items-center justify-center rounded-lg transition-colors flex-shrink-0"
                     style={{ 
                       width: '32px', 
                       height: '32px',
                       backgroundColor: isActive ? `${cat.color}15` : 'var(--bg-tertiary)',
                       color: isActive ? cat.color : 'var(--text-muted)',
-                      marginRight: '1rem'
+                      marginRight: '0.75rem'
                     }}
                   >
                     {cat.icon}
                   </div>
                   <span 
-                    className="font-medium tracking-wide transition-colors text-[15px]"
+                    className="font-medium tracking-wide transition-colors text-[14px] md:text-[15px] whitespace-nowrap"
                     style={{ 
                       color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)'
                     }}
@@ -176,8 +176,8 @@ export default function Skills() {
           {/* Content Area */}
           <div className="w-full lg:w-2/3">
             <div 
-              className="h-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] overflow-hidden relative"
-              style={{ padding: '2rem', minHeight: '320px' }}
+              className="h-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] overflow-hidden relative p-6 md:p-8"
+              style={{ minHeight: '320px' }}
             >
               <AnimatePresence mode="wait">
                 <motion.div

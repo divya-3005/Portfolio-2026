@@ -68,7 +68,7 @@ export default function Projects() {
         </motion.div>
 
         {/* Project Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '2.5rem' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
           {TOP_PROJECTS.map((project, index) => (
             <motion.a
               key={project.id}
@@ -79,8 +79,7 @@ export default function Projects() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group flex flex-col bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent-cyan)] hover:shadow-[0_0_20px_rgba(0,255,255,0.1)] hover:-translate-y-2 transition-all duration-300"
-              style={{ padding: '2.5rem' }}
+              className="group flex flex-col bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent-cyan)] hover:shadow-[0_0_20px_rgba(0,255,255,0.1)] hover:-translate-y-2 transition-all duration-300 p-6 md:p-10"
             >
               <div className="flex flex-col h-full">
                 <div className="flex justify-between items-start" style={{ marginBottom: '2rem' }}>

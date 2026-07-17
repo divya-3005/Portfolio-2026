@@ -1,8 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 export default function Hero() {
+  const [copied, setCopied] = useState(false);
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -85,13 +88,18 @@ export default function Hero() {
           >
             LinkedIn
           </a>
-          <a
-            href="mailto:divyasingh2005@gmail.com"
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              navigator.clipboard.writeText('divyasingh2005@gmail.com');
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            }}
             className="minimal-link"
-            data-cursor="Email"
+            data-cursor={copied ? "Copied" : "Email"}
           >
-            Email
-          </a>
+            {copied ? 'Copied!' : 'Email'}
+          </button>
           <a
             href="/resume.pdf"
             className="minimal-link"

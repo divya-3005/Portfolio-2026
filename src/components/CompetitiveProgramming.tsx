@@ -118,8 +118,8 @@ export default function CompetitiveProgramming() {
 
         {/* Tab Content */}
         <div 
-          className="bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl relative overflow-hidden flex flex-col"
-          style={{ padding: '2.5rem', minHeight: '400px' }}
+          className="bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl relative overflow-hidden flex flex-col p-6 md:p-10"
+          style={{ minHeight: '400px' }}
         >
           <AnimatePresence mode="wait">
             <motion.div
