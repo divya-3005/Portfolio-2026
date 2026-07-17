@@ -45,15 +45,17 @@ export default function StatsBar() {
   useEffect(() => {
     async function fetchStats() {
       try {
-        const [githubRes, leetcodeRes, cfRes] = await Promise.allSettled([
+        const [githubRes, leetcodeRes, cfRes, contribRes] = await Promise.allSettled([
           fetch('/api/github').then(r => r.json()),
           fetch('/api/leetcode').then(r => r.json()),
           fetch('/api/codeforces').then(r => r.json()),
+          fetch('/api/github/contributions').then(r => r.json()),
         ]);
 
         const github = githubRes.status === 'fulfilled' ? githubRes.value : null;
         const leetcode = leetcodeRes.status === 'fulfilled' ? leetcodeRes.value : null;
         const cf = cfRes.status === 'fulfilled' ? cfRes.value : null;
+        const contrib = contribRes.status === 'fulfilled' ? contribRes.value : null;
 
         setStats([
           {
@@ -64,7 +66,7 @@ export default function StatsBar() {
           },
           {
             label: 'Contributions',
-            value: github?.profile?.publicRepos ? github.profile.publicRepos * 15 : 200,
+            value: contrib?.totalContributions || 401,
             suffix: '+',
             icon: <GitPullRequest size={22} />,
             color: 'var(--accent-blue)',
@@ -95,10 +97,10 @@ export default function StatsBar() {
         // Use fallback stats
         setStats([
           { label: 'GitHub Repos', value: 17, icon: <GithubIcon size={22} />, color: 'var(--accent-cyan)' },
-          { label: 'Contributions', value: 200, suffix: '+', icon: <GitPullRequest size={22} />, color: 'var(--accent-blue)' },
+          { label: 'Contributions', value: 401, suffix: '+', icon: <GitPullRequest size={22} />, color: 'var(--accent-blue)' },
           { label: 'DSA Problems', value: 500, suffix: '+', icon: <Code2 size={22} />, color: 'var(--accent-violet)' },
           { label: 'CF Rating', value: 1062, icon: <Trophy size={22} />, color: 'var(--accent-amber)' },
-          { label: 'CodeChef', value: 2, suffix: '★', icon: <Star size={22} />, color: 'var(--accent-pink)', url: 'https://www.codechef.com/users/easy_trust_71' },
+          { label: 'CodeChef', value: 2, suffix: '★', icon: <Star size={22} />, color: 'var(--accent-pink)' },
         ]);
       } finally {
         setLoading(false);

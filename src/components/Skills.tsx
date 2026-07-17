@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Code2, Layout, Server, Database, Cloud, Bot, BookOpen } from 'lucide-react';
 
 interface SkillItem {
   name: string;
@@ -9,17 +10,19 @@ interface SkillItem {
 }
 
 interface SkillCategory {
+  id: string;
   title: string;
   color: string;
-  icon: string;
+  icon: React.ReactNode;
   skills: SkillItem[];
 }
 
 const SKILL_CATEGORIES: SkillCategory[] = [
   {
+    id: 'languages',
     title: 'Languages',
     color: '#3b82f6',
-    icon: '⟨/⟩',
+    icon: <Code2 size={20} />,
     skills: [
       { name: 'C++', usedIn: 'Competitive Programming, DSA' },
       { name: 'JavaScript', usedIn: 'CollabDocs, Portfolio' },
@@ -29,9 +32,10 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     ],
   },
   {
+    id: 'frontend',
     title: 'Frontend',
     color: '#06d6a0',
-    icon: '🎨',
+    icon: <Layout size={20} />,
     skills: [
       { name: 'React', usedIn: 'CollabDocs, Portfolio' },
       { name: 'Next.js', usedIn: 'Portfolio, Web apps' },
@@ -39,9 +43,10 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     ],
   },
   {
+    id: 'backend',
     title: 'Backend',
     color: '#8b5cf6',
-    icon: '⚙️',
+    icon: <Server size={20} />,
     skills: [
       { name: 'Node.js', usedIn: 'CollabDocs' },
       { name: 'Express', usedIn: 'CollabDocs, REST APIs' },
@@ -51,9 +56,10 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     ],
   },
   {
+    id: 'databases',
     title: 'Databases',
     color: '#f59e0b',
-    icon: '🗄️',
+    icon: <Database size={20} />,
     skills: [
       { name: 'PostgreSQL', usedIn: 'CollabDocs' },
       { name: 'MongoDB', usedIn: 'Various projects' },
@@ -62,9 +68,10 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     ],
   },
   {
+    id: 'cloud',
     title: 'Cloud & DevOps',
     color: '#ec4899',
-    icon: '☁️',
+    icon: <Cloud size={20} />,
     skills: [
       { name: 'Docker', usedIn: 'ShopSmart containers' },
       { name: 'Terraform', usedIn: 'ShopSmart IaC' },
@@ -73,9 +80,10 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     ],
   },
   {
+    id: 'ai',
     title: 'AI & ML',
     color: '#06b6d4',
-    icon: '🤖',
+    icon: <Bot size={20} />,
     skills: [
       { name: 'LangChain', usedIn: 'RAG pipelines' },
       { name: 'FAISS', usedIn: 'ReMi vector search' },
@@ -84,9 +92,10 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     ],
   },
   {
+    id: 'core',
     title: 'Core CS',
     color: '#a78bfa',
-    icon: '📚',
+    icon: <BookOpen size={20} />,
     skills: [
       { name: 'DSA', usedIn: '500+ problems solved' },
       { name: 'OOP', usedIn: 'System design, C++' },
@@ -98,73 +107,125 @@ const SKILL_CATEGORIES: SkillCategory[] = [
 ];
 
 export default function Skills() {
-  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>(SKILL_CATEGORIES[0].id);
+
+  const activeCategory = SKILL_CATEGORIES.find(c => c.id === activeTab) || SKILL_CATEGORIES[0];
 
   return (
-    <section id="skills" className="relative bg-[var(--bg-secondary)]">
+    <section id="skills" className="relative py-24 bg-[var(--bg-secondary)]">
       <div className="section-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          style={{ marginBottom: '4rem' }}
         >
-          <h2 className="section-title">
-            <span className="gradient-text">Tech Stack</span>
-          </h2>
-          <p className="section-subtitle">
-            Technologies I work with — hover to see where I use them
-          </p>
+          <h2 className="text-sm font-mono text-[var(--text-muted)] tracking-widest uppercase mb-2">{`// 03`} &nbsp; Tech Stack</h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {SKILL_CATEGORIES.map((cat, catIdx) => (
-            <motion.div
-              key={cat.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: catIdx * 0.08, duration: 0.5 }}
-              className="glass-card p-5"
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-lg">{cat.icon}</span>
-                <h3
-                  className="font-semibold text-sm uppercase tracking-wider"
-                  style={{ color: cat.color }}
+        <div className="flex flex-col lg:flex-row" style={{ gap: '2rem' }}>
+          {/* Sidebar / Tabs */}
+          <div className="w-full lg:w-1/3 flex flex-col" style={{ gap: '0.25rem' }}>
+            {SKILL_CATEGORIES.map((cat) => {
+              const isActive = activeTab === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveTab(cat.id)}
+                  className={`flex items-center text-left rounded-xl transition-all duration-300 w-full group relative overflow-hidden`}
+                  style={{
+                    padding: '0.75rem 1rem',
+                    backgroundColor: isActive ? 'var(--bg-tertiary)' : 'transparent',
+                    border: isActive ? `1px solid var(--border-subtle)` : '1px solid transparent',
+                  }}
                 >
-                  {cat.title}
-                </h3>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {cat.skills.map(skill => (
-                  <div
-                    key={skill.name}
-                    className="relative group"
-                    onMouseEnter={() => setHoveredSkill(skill.name)}
-                    onMouseLeave={() => setHoveredSkill(null)}
+                  {/* Indicator Line */}
+                  {isActive && (
+                    <motion.div 
+                      layoutId="activeTabIndicator"
+                      className="absolute left-0 top-0 bottom-0 w-1"
+                      style={{ backgroundColor: cat.color }}
+                    />
+                  )}
+                  
+                  <div 
+                    className="flex items-center justify-center rounded-lg transition-colors"
+                    style={{ 
+                      width: '32px', 
+                      height: '32px',
+                      backgroundColor: isActive ? `${cat.color}15` : 'var(--bg-tertiary)',
+                      color: isActive ? cat.color : 'var(--text-muted)',
+                      marginRight: '1rem'
+                    }}
                   >
-                    <span
-                      className="inline-block px-3 py-1.5 text-sm rounded-lg border transition-all duration-200 cursor-default"
-                      style={{
-                        borderColor: hoveredSkill === skill.name ? cat.color : 'var(--border-subtle)',
-                        backgroundColor: hoveredSkill === skill.name ? `${cat.color}15` : 'transparent',
-                        color: hoveredSkill === skill.name ? cat.color : 'var(--text-secondary)',
-                      }}
-                    >
-                      {skill.name}
-                    </span>
-                    {/* Tooltip */}
-                    {skill.usedIn && hoveredSkill === skill.name && (
-                      <div className="absolute z-20 bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-lg text-xs text-[var(--text-secondary)] whitespace-nowrap shadow-lg">
-                        {skill.usedIn}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-[var(--bg-primary)] border-r border-b border-[var(--border-subtle)] rotate-45 -mt-1" />
-                      </div>
-                    )}
+                    {cat.icon}
                   </div>
-                ))}
-              </div>
-            </motion.div>
-          ))}
+                  <span 
+                    className="font-medium tracking-wide transition-colors text-[15px]"
+                    style={{ 
+                      color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)'
+                    }}
+                  >
+                    {cat.title}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Content Area */}
+          <div className="w-full lg:w-2/3">
+            <div 
+              className="h-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] overflow-hidden relative"
+              style={{ padding: '2rem', minHeight: '320px' }}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeCategory.id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                  className="h-full flex flex-col"
+                >
+                  <div className="flex items-center mb-6" style={{ gap: '1rem' }}>
+                    <div 
+                      className="p-2.5 rounded-xl"
+                      style={{ backgroundColor: `${activeCategory.color}15`, color: activeCategory.color }}
+                    >
+                      {activeCategory.icon}
+                    </div>
+                    <h3 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+                      {activeCategory.title}
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '1rem' }}>
+                    {activeCategory.skills.map((skill, index) => (
+                      <motion.div
+                        key={skill.name}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        className="bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-xl hover:border-[var(--border-hover)] transition-colors"
+                        style={{ padding: '1rem' }}
+                      >
+                        <h4 
+                          className="text-base font-bold mb-1"
+                          style={{ color: activeCategory.color }}
+                        >
+                          {skill.name}
+                        </h4>
+                        <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                          {skill.usedIn}
+                        </p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
       </div>
     </section>

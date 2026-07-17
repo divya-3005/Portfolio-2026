@@ -1,8 +1,11 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Briefcase, GraduationCap, MapPin, Calendar, ChevronRight } from 'lucide-react';
 
 interface TimelineItem {
+  id: string;
   type: 'work' | 'education';
   title: string;
   organization: string;
@@ -14,6 +17,7 @@ interface TimelineItem {
 
 const TIMELINE: TimelineItem[] = [
   {
+    id: 'beyond-innovation',
     type: 'work',
     title: 'Software Engineer Intern',
     organization: 'Beyond Innovation',
@@ -27,6 +31,7 @@ const TIMELINE: TimelineItem[] = [
     ],
   },
   {
+    id: 'rishihood',
     type: 'education',
     title: 'B.Tech in CS & Data Science',
     organization: 'Rishihood University',
@@ -40,78 +45,130 @@ const TIMELINE: TimelineItem[] = [
   },
 ];
 
-function TimelineRow({ item, index }: { item: TimelineItem; index: number }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="relative pl-8 md:pl-0"
-    >
-      <div className="md:grid md:grid-cols-4 gap-8 py-12 border-b border-[var(--border-subtle)] group">
-        
-        {/* Mobile-only left border */}
-        <div className="md:hidden absolute left-0 top-0 bottom-0 w-px bg-[var(--border-subtle)]">
-          <div className="absolute top-10 -left-1 w-2 h-2 rounded-full bg-[var(--text-primary)]" />
-        </div>
-
-        {/* Desktop left column (Dates & Type) */}
-        <div className="hidden md:flex flex-col col-span-1 pt-1">
-          <span className="text-sm font-mono text-[var(--text-secondary)]">{item.period}</span>
-          <span className="text-xs uppercase tracking-widest text-[var(--text-muted)] mt-2">
-            {item.type} {item.current && '— Current'}
-          </span>
-        </div>
-        
-        {/* Main Content */}
-        <div className="col-span-3">
-          <div className="md:hidden mb-4">
-            <span className="text-sm font-mono text-[var(--text-secondary)] block mb-1">{item.period}</span>
-            <span className="text-xs uppercase tracking-widest text-[var(--text-muted)]">
-              {item.type} {item.current && '— Current'}
-            </span>
-          </div>
-
-          <h3 className="text-2xl font-medium text-[var(--text-primary)] mb-1">
-            {item.title}
-          </h3>
-          <div className="flex flex-wrap items-center gap-2 text-[var(--text-secondary)] mb-6">
-            <span className="font-mono text-sm">{item.organization}</span>
-            <span className="text-[var(--text-muted)]">•</span>
-            <span className="font-mono text-sm">{item.location}</span>
-          </div>
-          
-          <ul className="space-y-2">
-            {item.description.map((desc, j) => (
-              <li key={j} className="text-sm text-[var(--text-secondary)] flex items-start">
-                <span className="mr-3 mt-1.5 w-1 h-1 rounded-full bg-[var(--text-muted)] shrink-0" />
-                <span className="leading-relaxed">{desc}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 export default function Experience() {
-  return (
-    <section id="experience" className="relative py-24 bg-[var(--bg-primary)]">
-      <div className="section-container">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="section-title">Experience &amp; Education</h2>
-        </motion.div>
+  const [activeTabId, setActiveTabId] = useState<string>(TIMELINE[0].id);
+  const activeItem = TIMELINE.find((item) => item.id === activeTabId) || TIMELINE[0];
 
-        <div className="mt-8 border-t border-[var(--border-subtle)]">
-          {TIMELINE.map((item, i) => (
-            <TimelineRow key={i} item={item} index={i} />
-          ))}
+  return (
+    <section id="experience" className="relative py-24 bg-[var(--bg-primary)] overflow-hidden block w-full">
+      {/* Decorative background blurs */}
+      <div className="absolute top-40 left-0 w-96 h-96 bg-[var(--accent-cyan)]/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-20 right-0 w-96 h-96 bg-[var(--accent-pink)]/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="section-container relative z-10">
+        
+        {/* 1. Header Section - Centered */}
+        <div className="w-full flex flex-col items-center justify-center text-center" style={{ marginBottom: '4rem' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center w-full"
+          >
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="h-px w-8 bg-[var(--border-subtle)] hidden md:block" />
+              <span className="text-sm font-mono text-[var(--text-muted)] tracking-widest uppercase">{`// 06`}</span>
+              <div className="h-px w-8 bg-[var(--border-subtle)] hidden md:block" />
+            </div>
+            <h3 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] tracking-tight">
+              Where I've <span className="text-[var(--accent-cyan)]">Worked</span>
+            </h3>
+          </motion.div>
+        </div>
+
+        {/* 2. Content Section - Grid Layout pulled inward */}
+        <div className="w-full block max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-start w-full">
+            
+            {/* Tabs List (Left Column, spans 4 cols on desktop) */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="md:col-span-4 flex md:flex-col overflow-x-auto md:overflow-x-visible hide-scrollbar border-b md:border-b-0 md:border-l border-[var(--border-subtle)] relative w-full"
+            >
+              {/* Animated Active Indicator */}
+              <div className="absolute transition-all duration-300 ease-out hidden md:block w-[2px] bg-[var(--accent-cyan)] left-[-1px]" 
+                   style={{ 
+                     top: `${TIMELINE.findIndex(t => t.id === activeTabId) * 72}px`,
+                     height: '72px' 
+                   }} 
+              />
+              {/* Animated Active Indicator (Mobile) */}
+              <div className="absolute transition-all duration-300 ease-out md:hidden h-[2px] bg-[var(--accent-cyan)] bottom-[-1px]" 
+                   style={{ 
+                     left: `${TIMELINE.findIndex(t => t.id === activeTabId) * (100 / TIMELINE.length)}%`,
+                     width: `${100 / TIMELINE.length}%` 
+                   }} 
+              />
+
+              {TIMELINE.map((item) => {
+                const isActive = activeTabId === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTabId(item.id)}
+                    className={`h-[72px] px-8 flex items-center justify-center md:justify-start whitespace-nowrap text-lg font-medium transition-all duration-300 relative group text-left w-full
+                      ${isActive 
+                        ? 'text-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5' 
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
+                      }`}
+                  >
+                    {item.organization}
+                  </button>
+                );
+              })}
+            </motion.div>
+
+            {/* Tab Content (Right Column, spans 8 cols on desktop) */}
+            <div className="md:col-span-8 w-full min-h-[400px]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeItem.id}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.4, ease: 'easeOut' }}
+                  className="w-full"
+                >
+                  <div className="w-full" style={{ marginBottom: '3rem' }}>
+                    <h3 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] leading-tight" style={{ marginBottom: '1rem' }}>
+                      {activeItem.title}
+                    </h3>
+                    <div className="text-xl md:text-2xl text-[var(--accent-cyan)] font-medium" style={{ marginBottom: '2rem' }}>
+                      @ {activeItem.organization}
+                    </div>
+                    
+                    <div className="flex flex-wrap items-center gap-8 text-base font-mono text-[var(--text-muted)]">
+                      <span className="flex items-center gap-2">
+                        <Calendar size={18} className="opacity-70" />
+                        {activeItem.period}
+                      </span>
+                      <span className="flex items-center gap-2">
+                        <MapPin size={18} className="opacity-70" />
+                        {activeItem.location}
+                      </span>
+                    </div>
+                  </div>
+
+                  <ul className="w-full" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    {activeItem.description.map((desc, i) => (
+                      <motion.li 
+                        key={i}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="flex items-start text-[var(--text-secondary)] text-lg leading-relaxed"
+                      >
+                        <span className="mr-5 mt-2.5 w-2 h-2 rounded-sm bg-[var(--accent-cyan)]/80 shrink-0" />
+                        <span className="tracking-wide">{desc}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
       </div>
     </section>

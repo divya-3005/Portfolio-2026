@@ -7,72 +7,55 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
 
 export async function GET() {
   try {
-    // Fetch contribution data from GitHub events API
-    const headers: HeadersInit = {
-      'Accept': 'application/vnd.github.v3+json',
-      'User-Agent': 'divya-portfolio',
-    };
-    if (GITHUB_TOKEN) {
-      headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+    if (!GITHUB_TOKEN) {
+      return NextResponse.json({
+        totalContributions: 190, // Fallback if no token is provided
+        message: 'No GITHUB_TOKEN provided. Serving fallback data.'
+      });
     }
 
-    // Fetch multiple pages of events to build contribution data
-    const allEvents: any[] = [];
-    for (let page = 1; page <= 3; page++) {
-      const res = await fetch(
-        `https://api.github.com/users/${GITHUB_USERNAME}/events?per_page=100&page=${page}`,
-        { headers, next: { revalidate: 21600 } }
-      );
-      if (!res.ok) break;
-      const events = await res.json();
-      if (events.length === 0) break;
-      allEvents.push(...events);
-    }
-
-    // Build contribution heatmap from events
-    const contributionMap: Record<string, number> = {};
-    const now = new Date();
-    const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
-
-    // Initialize all days in the past year with 0
-    for (let d = new Date(oneYearAgo); d <= now; d.setDate(d.getDate() + 1)) {
-      contributionMap[d.toISOString().split('T')[0]] = 0;
-    }
-
-    // Count push events and other contribution-like events
-    const contributionEvents = ['PushEvent', 'PullRequestEvent', 'IssuesEvent', 'CreateEvent', 'PullRequestReviewEvent'];
-    allEvents.forEach((event: any) => {
-      if (contributionEvents.includes(event.type)) {
-        const date = event.created_at.split('T')[0];
-        if (contributionMap[date] !== undefined) {
-          if (event.type === 'PushEvent') {
-            contributionMap[date] += event.payload?.commits?.length || 1;
-          } else {
-            contributionMap[date] += 1;
+    const query = `
+      query {
+        user(login: "${GITHUB_USERNAME}") {
+          contributionsCollection {
+            contributionCalendar {
+              totalContributions
+            }
           }
         }
       }
+    `;
+
+    const res = await fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+      next: { revalidate: 3600 }
     });
 
-    // Convert to array format for the heatmap
-    const contributions = Object.entries(contributionMap).map(([date, count]) => ({
-      date,
-      count,
-    }));
+    if (!res.ok) {
+      throw new Error(`GitHub GraphQL API responded with status ${res.status}`);
+    }
 
-    const totalContributions = contributions.reduce((sum, c) => sum + c.count, 0);
+    const json = await res.json();
+    
+    if (json.errors) {
+      throw new Error(json.errors[0].message);
+    }
+
+    const total = json.data.user.contributionsCollection.contributionCalendar.totalContributions;
 
     return NextResponse.json({
-      contributions,
-      totalContributions,
-      startDate: oneYearAgo.toISOString().split('T')[0],
-      endDate: now.toISOString().split('T')[0],
+      totalContributions: total,
     });
   } catch (error: any) {
     console.error('GitHub Contributions Error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch contributions', message: error.message },
-      { status: 500 }
+      { totalContributions: 190, error: 'Failed to fetch contributions', message: error.message },
+      { status: 200 } // Return 200 with fallback so the UI doesn't break
     );
   }
 }

@@ -13,7 +13,7 @@ export default function About() {
             viewport={{ once: true }}
             className="md:col-span-4"
           >
-            <h2 className="text-sm font-mono text-[var(--text-muted)] tracking-widest uppercase mb-2">// 01 &nbsp; About</h2>
+            <h2 className="text-sm font-mono text-[var(--text-muted)] tracking-widest uppercase mb-2">{`// 01`} &nbsp; About</h2>
             <p className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] tracking-tight">The Architecture <br className="hidden md:block" />of Logic.</p>
           </motion.div>
 
@@ -25,10 +25,7 @@ export default function About() {
             className="md:col-span-8 text-lg md:text-xl text-[var(--text-secondary)] leading-relaxed space-y-6 font-medium"
           >
             <p>
-              I bridge the gap between complex data science models and production-grade full-stack systems. Engineering is not just about code; it's about architecting solutions that scale elegantly.
-            </p>
-            <p>
-              My expertise lies in translating mathematical ambiguity into deterministic, high-performance infrastructure, ensuring that every layer—from the database to the DOM—operates flawlessly.
+              I bridge data science and full-stack engineering — turning ambiguous problems into systems that are fast, reliable, and built to scale. My work spans REST APIs, cloud infrastructure, and AI-driven tools, with a habit of digging into the &apos;why&apos; before writing a single line of code. I care about clean architecture as much as clean code: every layer, from database schema to UI, should do exactly what it&apos;s supposed to and nothing more.
             </p>
           </motion.div>
         </div>

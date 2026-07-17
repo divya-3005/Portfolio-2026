@@ -1,175 +1,60 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 
-interface Repo {
-  id: number;
-  name: string;
-  description: string | null;
-  url: string;
-  homepage: string | null;
-  language: string | null;
-  languages: Record<string, number>;
-  pushedAt: string;
-}
-
-const CURATED_PROJECTS: Record<string, { displayName: string; summary: string; fallbackUrl?: string; fallbackLang?: string; category: string }> = {
-  'reporag': {
+const TOP_PROJECTS = [
+  {
+    id: 'remi',
+    displayName: 'ResearchMind (ReMi)',
+    description: 'An autonomous, multi-agent RAG platform. Features an agentic planner, specialized researcher sub-agents, Semantic Chunking, HyDE query expansion, and a dual-index Hybrid Search Engine (FAISS + BM25).',
+    techStack: ['Python', 'FastAPI', 'React', 'FAISS', 'HyDE'],
+    outcome: 'Generated rigorously cited reports with character-level source grounding.',
+    url: 'https://github.com/divya-3005/ReMi'
+  },
+  {
+    id: 'reporag',
     displayName: 'RepoRAG AI',
-    summary: 'RAG-based repository analysis and retrieval tool.',
-    fallbackUrl: 'https://github.com/newton-school-ai/reporag-ai_2',
-    fallbackLang: 'Python',
-    category: 'AI & Data Science',
+    description: 'An agentic Retrieval-Augmented Generation (RAG) system purpose-built for codebases. Parses ASTs, builds Neo4j call graphs, and uses an agentic planner to answer multi-hop code questions with line-level citations.',
+    techStack: ['Python', 'Tree-Sitter', 'Neo4j', 'Qdrant', 'CodeBERT'],
+    outcome: 'Mapped complex repository structures using hybrid vector & sparse indexing.',
+    url: 'https://github.com/newton-school-ai/reporag-ai_2'
   },
-  'liar-ml': {
-    displayName: 'Project Clandestine (LIAR Dataset)',
-    summary: 'Machine Learning models on the LIAR dataset. Built the core ML pipeline and evaluation metrics. (Collab with Udit Jain)',
-    fallbackUrl: 'https://github.com/uditjainstjis/Project-Clandestine',
-    fallbackLang: 'Jupyter Notebook',
-    category: 'AI & Data Science',
+  {
+    id: 'shopsmart',
+    displayName: 'ShopSmart DevSecOps',
+    description: 'A production-ready e-commerce architecture demonstrating a complete DevSecOps pipeline. Features Infrastructure as Code (IaC), containerized serverless deployment, and a mature CI/CD workflow.',
+    techStack: ['Terraform', 'AWS Fargate', 'Docker', 'GitHub Actions'],
+    outcome: 'Automated high-availability cloud deployments with zero-downtime execution.',
+    url: 'https://github.com/divya-3005/shopsmart'
   },
-  'tableau-viz': {
-    displayName: 'Job Market Trends Analytics',
-    summary: 'Interactive data visualizations and business intelligence reporting for Job Market Trends using Tableau. (Collab with Palak)',
-    fallbackUrl: 'https://github.com/PALAK7890/SectionA_Team14_JobMarketTrends',
-    fallbackLang: 'Jupyter Notebook',
-    category: 'AI & Data Science',
-  },
-  'ReMi': {
-    displayName: 'ReMi Agent',
-    summary: 'RAG research agent with hallucination grounding pipeline.',
-    category: 'AI & Data Science',
-  },
-  'ai-agents': {
-    displayName: 'AI Agents',
-    summary: 'Custom Python-based autonomous AI agent architectures.',
-    category: 'AI & Data Science',
-  },
-  'shopsmart': {
-    displayName: 'ShopSmart',
-    summary: 'Cloud deployment pipeline with infrastructure-as-code (Terraform).',
-    category: 'DevOps & Infrastructure',
-  },
-  'collab-editor': {
+  {
+    id: 'collab-editor',
     displayName: 'CollabDocs',
-    summary: 'Real-time collaborative editor using Operational Transformation.',
-    category: 'Full-Stack Engineering',
+    description: 'A full-stack real-time collaborative document editor engineered from scratch. Allows multiple concurrent users to edit the same document simultaneously using a custom Operational Transformation (OT) algorithm.',
+    techStack: ['React', 'Node.js', 'Socket.io', 'Prisma', 'PostgreSQL'],
+    outcome: 'Achieved seamless real-time syncing with zero data conflict.',
+    url: 'https://github.com/divya-3005/collab-editor'
   },
-  'Collabzen': {
-    displayName: 'Collabzen',
-    summary: 'Real-time collaboration platform and workspace.',
-    category: 'Full-Stack Engineering',
+  {
+    id: 'clandestine',
+    displayName: 'Project Clandestine',
+    description: 'An AI Information Verification System designed to combat AI-generated misinformation. Actively verifies claims through a dynamic trust-scoring pipeline, routing queries through crawlers and a trusted Knowledge Base.',
+    techStack: ['Python', 'LLMs', 'Web Crawling', 'RAG'],
+    outcome: 'Built a robust verification flow to prevent AI hallucination feedback loops.',
+    url: 'https://github.com/uditjainstjis/Project-Clandestine'
   },
-  'dsa-visualizer': {
-    displayName: 'DSA Visualizer',
-    summary: 'Interactive frontend visualization tool for algorithms and data structures.',
-    category: 'Full-Stack Engineering',
+  {
+    id: 'collabzen',
+    displayName: 'CollabZen',
+    description: 'A modern, real-time collaboration workspace designed for remote teams to brainstorm, plan, and execute projects seamlessly in a unified environment.',
+    techStack: ['JavaScript', 'React', 'Node.js', 'WebSockets'],
+    outcome: 'Delivered a fluid and responsive real-time multiplayer experience.',
+    url: 'https://github.com/divya-3005/Collabzen'
   }
-};
-
-function ProjectRow({ repo, index }: { repo: Repo; index: number }) {
-  const details = CURATED_PROJECTS[repo.name];
-  if (!details) return null;
-  
-  const displayName = details.displayName;
-  const summary = details.summary;
-  
-  const topLanguages = Object.keys(repo.languages || {}).slice(0, 2);
-  const displayLangs = topLanguages.length > 0 ? topLanguages : (repo.language ? [repo.language] : []);
-
-  return (
-    <motion.a
-      href={repo.homepage || repo.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.05 }}
-      className="group flex flex-col md:flex-row md:items-center justify-between py-10 border-b border-[var(--border-subtle)] hover:bg-[var(--bg-secondary)] px-6 -mx-6 transition-colors"
-      data-cursor="View"
-    >
-      <div className="flex flex-col md:w-1/3 mb-2 md:mb-0">
-        <h3 className="text-xl font-medium text-[var(--text-primary)] group-hover:translate-x-2 transition-transform">
-          {displayName}
-        </h3>
-      </div>
-      
-      <div className="flex flex-col md:w-1/2 mb-4 md:mb-0">
-        <p className="text-sm text-[var(--text-secondary)]">
-          {summary}
-        </p>
-      </div>
-      
-      <div className="flex items-center justify-between md:w-1/6 md:justify-end gap-4">
-        <div className="flex gap-2 text-xs font-mono text-[var(--text-muted)]">
-          {displayLangs.map(lang => (
-            <span key={lang}>{lang}</span>
-          ))}
-        </div>
-        <ArrowUpRight size={16} className="text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors" />
-      </div>
-    </motion.a>
-  );
-}
+];
 
 export default function Projects() {
-  const [repos, setRepos] = useState<{ owned: Repo[] }>({ owned: [] });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchRepos() {
-      try {
-        const res = await fetch('/api/github');
-        const data = await res.json();
-        if (data.owned) {
-          setRepos({ owned: data.owned });
-        }
-      } catch {
-        console.error('Failed to fetch repos');
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchRepos();
-  }, []);
-
-  // Create dummy Repo objects for any curated projects not found in the GitHub fetch
-  const curatedNames = Object.keys(CURATED_PROJECTS);
-  
-  const fetchedDisplayRepos = repos.owned.filter(r => curatedNames.includes(r.name));
-  const fetchedNames = fetchedDisplayRepos.map(r => r.name);
-  
-  const staticRepos: Repo[] = curatedNames
-    .filter(name => !fetchedNames.includes(name))
-    .map(name => {
-      const details = CURATED_PROJECTS[name];
-      return {
-        id: Math.random(),
-        name: name,
-        description: null,
-        url: details.fallbackUrl || '#',
-        homepage: details.fallbackUrl || '#',
-        language: details.fallbackLang || null,
-        languages: {},
-        pushedAt: new Date().toISOString(), // Dummy date
-      };
-    });
-
-  const displayRepos = [...fetchedDisplayRepos, ...staticRepos];
-
-  // Group by category
-  const groupedRepos = displayRepos.reduce((acc, repo) => {
-    const cat = CURATED_PROJECTS[repo.name]?.category || 'Other';
-    if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(repo);
-    return acc;
-  }, {} as Record<string, Repo[]>);
-
-  const categories = ['AI & Data Science', 'Full-Stack Engineering', 'DevOps & Infrastructure'];
-
   return (
     <section id="projects" className="relative py-24 bg-[var(--bg-primary)]">
       <div className="section-container">
@@ -177,42 +62,67 @@ export default function Projects() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
+          className="mb-12"
         >
-          <h2 className="section-title">Selected Work</h2>
+          <h2 className="text-sm font-mono text-[var(--text-muted)] tracking-widest uppercase mb-2">{`// 02`} &nbsp; Selected Work</h2>
         </motion.div>
 
-        {loading ? (
-          <div className="flex flex-col border-t border-[var(--border-subtle)] mt-8">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="py-10 border-b border-[var(--border-subtle)] px-6">
-                <div className="h-6 w-1/3 bg-[var(--bg-secondary)] skeleton mb-2" />
-                <div className="h-4 w-1/2 bg-[var(--bg-secondary)] skeleton" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          categories.map((category) => {
-            const catRepos = groupedRepos[category];
-            if (!catRepos || catRepos.length === 0) return null;
-            return (
-              <div key={category} className="mt-16 first:mt-8">
-                <h3 className="text-sm font-mono text-[var(--text-muted)] uppercase tracking-widest mb-4">{category}</h3>
-                <div className="flex flex-col border-t border-[var(--border-subtle)]">
-                  {catRepos.map((repo, idx) => (
-                    <ProjectRow key={repo.id} repo={repo} index={idx} />
+        {/* Project Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '2.5rem' }}>
+          {TOP_PROJECTS.map((project, index) => (
+            <motion.a
+              key={project.id}
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="group flex flex-col bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent-cyan)] hover:shadow-[0_0_20px_rgba(0,255,255,0.1)] hover:-translate-y-2 transition-all duration-300"
+              style={{ padding: '2.5rem' }}
+            >
+              <div className="flex flex-col h-full">
+                <div className="flex justify-between items-start" style={{ marginBottom: '2rem' }}>
+                  <h3 className="text-xl font-bold tracking-tight text-[var(--text-primary)] group-hover:text-[var(--accent-cyan)] transition-colors">
+                    {project.displayName}
+                  </h3>
+                  <ArrowUpRight size={22} className="text-[var(--text-muted)] group-hover:text-[var(--accent-cyan)] transition-colors" />
+                </div>
+                
+                <p className="text-[var(--text-secondary)] text-[15px] leading-relaxed flex-grow" style={{ marginBottom: '2rem' }}>
+                  {project.description}
+                </p>
+
+                <div className="rounded-lg border border-[var(--border-subtle)]" style={{ marginBottom: '2.5rem', padding: '1.25rem', backgroundColor: 'var(--bg-tertiary)' }}>
+                  <p className="text-[var(--text-primary)] text-sm font-medium leading-relaxed">
+                    <span className="text-[var(--accent-cyan)] opacity-70 mr-2">Result:</span>
+                    {project.outcome}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap mt-auto" style={{ gap: '0.75rem' }}>
+                  {project.techStack.map(tech => (
+                    <span 
+                      key={tech} 
+                      className="bg-transparent text-[var(--text-muted)] border border-[var(--border-subtle)] text-[11px] font-mono rounded-md uppercase tracking-wider"
+                      style={{ padding: '0.25rem 0.75rem' }}
+                    >
+                      {tech}
+                    </span>
                   ))}
                 </div>
               </div>
-            );
-          })
-        )}
+            </motion.a>
+          ))}
+        </div>
         
-        <div className="mt-16 text-left">
+        <div className="flex justify-start" style={{ marginTop: '5rem' }}>
           <a 
             href="https://github.com/divya-3005" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="minimal-link font-mono text-sm uppercase tracking-wider"
+            className="minimal-link font-mono text-sm uppercase tracking-widest"
           >
             View full archive on GitHub
           </a>

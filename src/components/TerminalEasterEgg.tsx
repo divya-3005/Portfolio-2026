@@ -3,36 +3,36 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const TRIGGER = 'sudo whoami';
+const OUTPUT_LINES = [
+  '$ sudo whoami',
+  '[sudo] password for visitor: ********',
+  '',
+  '> Authenticating...',
+  '> Access granted.',
+  '',
+  '╔══════════════════════════════════════╗',
+  '║                                      ║',
+  '║   DIVYA SINGH                        ║',
+  '║   Full-Stack Engineer                ║',
+  '║   DevOps · AI/RAG · Cloud           ║',
+  '║                                      ║',
+  '║   github.com/divya-3005             ║',
+  '║   divyasingh2005@gmail.com          ║',
+  '║                                      ║',
+  '╚══════════════════════════════════════╝',
+  '',
+  '> 500+ DSA problems solved',
+  '> Building production-grade systems',
+  '> Currently interning @ Beyond Innovation',
+  '',
+  '[Press ESC to close]',
+];
+
 export default function TerminalEasterEgg() {
-  const [buffer, setBuffer] = useState('');
+  const [, setBuffer] = useState('');
   const [show, setShow] = useState(false);
   const [lines, setLines] = useState<string[]>([]);
-
-  const TRIGGER = 'sudo whoami';
-  const OUTPUT_LINES = [
-    '$ sudo whoami',
-    '[sudo] password for visitor: ********',
-    '',
-    '> Authenticating...',
-    '> Access granted.',
-    '',
-    '╔══════════════════════════════════════╗',
-    '║                                      ║',
-    '║   DIVYA SINGH                        ║',
-    '║   Full-Stack Engineer                ║',
-    '║   DevOps · AI/RAG · Cloud           ║',
-    '║                                      ║',
-    '║   github.com/divya-3005             ║',
-    '║   divyasingh2005@gmail.com          ║',
-    '║                                      ║',
-    '╚══════════════════════════════════════╝',
-    '',
-    '> 500+ DSA problems solved',
-    '> Building production-grade systems',
-    '> Currently interning @ Beyond Innovation',
-    '',
-    '[Press ESC to close]',
-  ];
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (show) {
@@ -56,6 +56,7 @@ export default function TerminalEasterEgg() {
       setBuffer(prev => {
         const next = (prev + e.key).slice(-TRIGGER.length);
         if (next === TRIGGER) {
+          setLines([]);
           setShow(true);
           return '';
         }
@@ -72,7 +73,6 @@ export default function TerminalEasterEgg() {
   // Animate lines appearing one by one
   useEffect(() => {
     if (!show) return;
-    setLines([]);
     let i = 0;
     const interval = setInterval(() => {
       if (i < OUTPUT_LINES.length) {
