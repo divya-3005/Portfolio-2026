@@ -123,16 +123,16 @@ export default function Skills() {
           <h2 className="text-sm font-mono text-[var(--text-muted)] tracking-widest uppercase mb-2">{`// 03`} &nbsp; Tech Stack</h2>
         </motion.div>
 
-        <div className="flex flex-col lg:flex-row" style={{ gap: '2rem' }}>
+        <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar / Tabs */}
-          <div className="w-full lg:w-1/3 flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible hide-scrollbar pb-4 lg:pb-0" style={{ gap: '0.5rem' }}>
+          <div className="w-full md:w-1/3 flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible hide-scrollbar pb-4 md:pb-0 gap-2">
             {SKILL_CATEGORIES.map((cat) => {
               const isActive = activeTab === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => setActiveTab(cat.id)}
-                  className={`flex items-center text-left rounded-xl transition-all duration-300 w-auto lg:w-full group relative overflow-hidden flex-shrink-0`}
+                  className={`flex items-center text-left rounded-xl transition-all duration-300 w-auto md:w-full group relative overflow-hidden flex-shrink-0`}
                   style={{
                     padding: '0.75rem 1rem',
                     backgroundColor: isActive ? 'var(--bg-tertiary)' : 'transparent',
@@ -143,7 +143,14 @@ export default function Skills() {
                   {isActive && (
                     <motion.div 
                       layoutId="activeTabIndicator"
-                      className="absolute left-0 top-0 bottom-0 w-1"
+                      className="absolute left-0 top-0 bottom-0 w-1 hidden md:block"
+                      style={{ backgroundColor: cat.color }}
+                    />
+                  )}
+                  {isActive && (
+                    <motion.div 
+                      layoutId="activeTabIndicatorMobile"
+                      className="absolute left-0 right-0 bottom-0 h-1 md:hidden"
                       style={{ backgroundColor: cat.color }}
                     />
                   )}
@@ -174,7 +181,7 @@ export default function Skills() {
           </div>
 
           {/* Content Area */}
-          <div className="w-full lg:w-2/3">
+          <div className="w-full md:w-2/3">
             <div 
               className="h-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] overflow-hidden relative p-6 md:p-8"
               style={{ minHeight: '320px' }}

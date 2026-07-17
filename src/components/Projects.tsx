@@ -93,7 +93,7 @@ export default function Projects() {
                   {project.description}
                 </p>
 
-                <div className="rounded-lg border border-[var(--border-subtle)]" style={{ marginBottom: '2.5rem', padding: '1.25rem', backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-tertiary)] p-4 md:p-5 mb-8">
                   <p className="text-[var(--text-primary)] text-sm font-medium leading-relaxed">
                     <span className="text-[var(--accent-cyan)] opacity-70 mr-2">Result:</span>
                     {project.outcome}
